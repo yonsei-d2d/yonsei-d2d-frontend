@@ -102,9 +102,11 @@ const Map = () => {
       <MapContainer
         center={[37.5650959, 126.9383306]}
         zoom={16}
+        minZoom={16}
         zoomControl={false}
         attributionControl={false}
         style={{ height: '100%', width: '100%' }}
+        maxBounds={L.latLngBounds(L.latLng(37.5578353, 126.9477351),L.latLng(37.5719375, 126.9279973))}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png"
