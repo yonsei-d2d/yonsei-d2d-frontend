@@ -1,5 +1,5 @@
-import { createContext, useContext, useState } from 'react';
-import { Mode } from '../enums/mode.enum';
+import { createContext, useContext, useState } from "react";
+import { Mode } from "../enums/mode.enum";
 
 interface SheetContextType {
   currentMode: Mode;
@@ -18,31 +18,37 @@ interface SheetContextType {
   goTo: (mode: Mode) => void;
   goBack: () => void;
   goToMainandFlushStack: () => void;
+  hideSearchBar: boolean;
+  setHideSearchBar: (state: boolean) => void;
+  refresh: boolean;
+  redrawSheet: () => void;
 }
 
 const SheetContext = createContext<SheetContextType | undefined>(undefined);
 
 export const SheetProvider = ({ children }: { children: React.ReactNode }) => {
+  const [refresh, setRefresh] = useState<boolean>(true);
   const [title, setTitle] = useState<string>("");
   const [pageStack, setPageStack] = useState<Mode[]>([]);
   const [currentMode, setCurrentMode] = useState<Mode>(Mode.MAIN);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [previewContentHeight, setPreviewContentHeight] = useState<number>(0);
   const [mainContentHeight, setMainContentHeight] = useState<number>(0);
+  const [hideSearchBar, setHideSearchBar] = useState<boolean>(false);
 
   const popPageStack = () => {
     const previousMode = pageStack.pop();
     if (!previousMode) return Mode.MAIN;
     return previousMode;
-  }
+  };
 
   const pushPageStack = (input: Mode) => {
     setPageStack([...pageStack, input]);
-  }
+  };
 
   const goTo = (mode: Mode) => {
     setCurrentMode(mode);
-  }
+  };
 
   const goBack = () => {
     popPageStack();
@@ -51,17 +57,24 @@ export const SheetProvider = ({ children }: { children: React.ReactNode }) => {
       prevMode = popPageStack();
     }
     setCurrentMode(prevMode);
-  }
-
+  };
 
   const goToMainandFlushStack = () => {
     setPageStack([]);
     setCurrentMode(Mode.MAIN);
-  }
+  };
+
+  const redrawSheet = () => {
+    setRefresh(!refresh);
+  };
 
   return (
-    <SheetContext.Provider value={
-      {
+    <SheetContext.Provider
+      value={{
+        refresh,
+        redrawSheet,
+        hideSearchBar,
+        setHideSearchBar,
         goToMainandFlushStack,
         goTo,
         goBack,
@@ -77,18 +90,18 @@ export const SheetProvider = ({ children }: { children: React.ReactNode }) => {
         previewContentHeight,
         setPreviewContentHeight,
         mainContentHeight,
-        setMainContentHeight
-      }
-    }>
+        setMainContentHeight,
+      }}
+    >
       {children}
     </SheetContext.Provider>
   );
 };
 
-export const useSheet= () => {
+export const useSheet = () => {
   const context = useContext(SheetContext);
   if (context === undefined) {
-    throw new Error('useSheet must be used within a SheetProvider');
+    throw new Error("useSheet must be used within a SheetProvider");
   }
   return context;
 };

@@ -68,10 +68,8 @@ const RouteLayer = () => {
       removeMarker();
       const decodedPath = decode(routeResponse.path as string);
       if (decodedPath.length > 0) {
-        const origin = routeResponse.waypoints[0]
-        const destination = routeResponse.waypoints[routeResponse.waypoints.length - 1];
-
-        map.flyTo([(origin.lat + destination.lat) / 2, (origin.lng + destination.lng) / 2, 16])
+        const origin = routeResponse.waypoints[0];
+        map.flyTo([origin.lat, origin.lng, 16])
 
         const antPolyline = AntPath.antPath(decodedPath, {
           options: {

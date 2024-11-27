@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
-import { useRouteMap } from '../../contexts/MapContext';
-import { MainContent } from '../bottom-sheet/MainContent';
-import { PreviewContent } from '../bottom-sheet/PreviewContent';
+import { Alert, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { useEffect } from 'react';
-import { SheetPage } from '../bottom-sheet/SheetPage';
-import { Mode } from '../../enums/mode.enum';
-import { MapMode } from '../../enums/map-mode.enum';
+import { useRouteMap } from '../../../../contexts/MapContext';
+import { MapMode } from '../../../../enums/map-mode.enum';
+import { SheetPage } from '../../../bottom-sheet/SheetPage';
+import { Mode } from '../../../../enums/mode.enum';
+import { PreviewContent } from '../../../bottom-sheet/PreviewContent';
+import { MainContent } from '../../../bottom-sheet/MainContent';
 
 const ResultContainer = styled.div`
   padding: 0px;
