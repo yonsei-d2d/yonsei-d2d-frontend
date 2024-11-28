@@ -1,23 +1,25 @@
-import { RouteType } from "../enums/route-type.enum"
+import { RouteType } from "../enums/route-type.enum";
 
 export interface RouteRequest {
-    origin: RouteByCoordinates | RouteByRoom | RouteByLocationId;
-    destination: RouteByCoordinates | RouteByRoom | RouteByLocationId;
+  origin: RouteTarget;
+  destination: RouteTarget;
 }
 
-interface RouteTarget {
-    routeType: RouteType
+export type RouteTarget = RouteByCoordinates | RouteByRoom | RouteByLocationId | null;
+
+interface Route {
+  routeType: RouteType;
 }
 
-interface RouteByCoordinates extends RouteTarget {
-    latitude: number;
-    longitude: number;
+interface RouteByCoordinates extends Route {
+  latitude: number;
+  longitude: number;
 }
 
-interface RouteByRoom extends RouteTarget {
-    room: string;
+interface RouteByRoom extends Route {
+  room: string;
 }
 
-interface RouteByLocationId extends RouteTarget {
-    locationId: number;
+interface RouteByLocationId extends Route {
+  locationId: string;
 }

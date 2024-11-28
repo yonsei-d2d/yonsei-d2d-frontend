@@ -1,16 +1,21 @@
-import styled from 'styled-components';
-import { Mode } from '../../enums/mode.enum';
-import { Route } from '../route/Route';
-import { useSheet } from '../../contexts/SheetContext';
-import { ActionBar } from './ActionBar';
-import { Main } from '../main/Main';
-import RouteResult from '../route/RouteResult';
-import { RouteError } from '../route/RouteError';
-import { Search } from '../search/Search';
-import SearchResult from '../search/SearchResult';
-import { Assistant } from '../assistant/Assistant';
+import styled from "styled-components";
+import { Mode } from "../../enums/mode.enum";
+import { useSheet } from "../../contexts/SheetContext";
+import { ActionBar } from "./ActionBar";
+import { Main } from "../main/Main";
+import { Search } from "../search/Search";
+import SearchResult from "../search/SearchResult";
+import { Assistant } from "../assistant/Assistant";
+import { Route } from "../route/v2/route/Route";
+import RouteResult from "../route/v2/route/RouteResult";
+import { RouteError } from "../route/v2/route/RouteError";
 
-const Sheet = styled.div<{ $isExpanded: boolean; $previewHeight: number; $mainHeight: number; }>`
+const Sheet = styled.div<{
+  $isExpanded: boolean;
+  $isActionBarHide: boolean;
+  $previewHeight: number;
+  $mainHeight: number;
+}>`
   position: fixed;
   padding: 0;
   margin: 0;
@@ -21,10 +26,15 @@ const Sheet = styled.div<{ $isExpanded: boolean; $previewHeight: number; $mainHe
 
   background: white;
   border-radius: 20px 20px 0 0;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   transition: 0.3s ease-in-out;
 
-  height: calc(${props => props.$isExpanded ? `${props.$previewHeight +  props.$mainHeight}px` : `${props.$previewHeight}px`} + 68px);
+  height: calc(
+    ${(props) =>
+        props.$isExpanded
+          ? `${props.$previewHeight + props.$mainHeight}px`
+          : `${props.$previewHeight}px`} + ${(props) => props.$isActionBarHide ? '28px' : '68px'}
+  );
   transform: translateX(-50%);
   z-index: 1000;
 `;
@@ -41,35 +51,88 @@ const Handle = styled.div`
 const HandleWrapper = styled.div`
   width: 100%;
   margin: 0;
-`
+`;
 
 const BottomSheet = () => {
-    const {currentMode, previewContentHeight, mainContentHeight, isExpanded, setIsExpanded} = useSheet();
+  const {
+    currentMode,
+    previewContentHeight,
+    mainContentHeight,
+    isExpanded,
+    setIsExpanded,
+  } = useSheet();
 
-    const Content = () => {
-      switch (currentMode) {
-        case Mode.MAIN: return <Main></Main>;
-        // Route
-        case Mode.ROUTE: return <Route></Route>;
-        case Mode.ROUTE_RESULT: return <RouteResult></RouteResult>;
-        case Mode.ROUTE_ERROR: return <RouteError></RouteError>;
-        // Search
-        case Mode.SEARCH: return <Search></Search>;
-        case Mode.SEARCH_RESULT: return <SearchResult></SearchResult>;
-        // ASSISTAT
-        case Mode.ASSISTANT: return <Assistant></Assistant>;
-      }
+  const Content = () => {
+    switch (currentMode) {
+      case Mode.MAIN:
+        return <Main></Main>;
+
+      // Route
+      /*
+      case Mode.ROUTE:
+        return <Route></Route>;
+      case Mode.ROUTE_RESULT:
+        return <RouteResult></RouteResult>;
+      case Mode.ROUTE_ERROR:
+        return <RouteError></RouteError>;
+      */
+
+      // Route
+      case Mode.ROUTE:
+        return <Route></Route>;
+      case Mode.ROUTE_RESULT:
+        return <RouteResult></RouteResult>;
+      case Mode.ROUTE_ERROR:
+        return <RouteError></RouteError>;
+
+      // Search
+      case Mode.SEARCH:
+        return <Search></Search>;
+      case Mode.SEARCH_RESULT:
+        return <SearchResult></SearchResult>;
+
+      // ASSISTAT
+      case Mode.ASSISTANT:
+        return <Assistant></Assistant>;
     }
-  
-    return (
-      <Sheet $isExpanded={isExpanded} $previewHeight={previewContentHeight} $mainHeight={mainContentHeight}>
-        <HandleWrapper  onClick={() => setIsExpanded(!isExpanded)}>
-          <Handle />
-        </HandleWrapper>
-          <ActionBar></ActionBar>
-          {Content()}
-      </Sheet>
-    );
   };
 
-export default BottomSheet; 
+
+  const ActionBarWrapper = () => {
+    switch (currentMode) {
+      case Mode.MAIN:
+      case Mode.SEARCH:
+        return null;
+      default:
+        return <ActionBar></ActionBar>;
+    }
+  }
+
+
+  const isActionBarHide = () => {
+    switch (currentMode) {
+      case Mode.MAIN:
+      case Mode.SEARCH:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  return (
+    <Sheet
+      $isExpanded={isExpanded}
+      $isActionBarHide={isActionBarHide()}
+      $previewHeight={previewContentHeight}
+      $mainHeight={mainContentHeight}
+    >
+      <HandleWrapper onClick={() => setIsExpanded(!isExpanded)}>
+        <Handle />
+      </HandleWrapper>
+      <ActionBarWrapper />
+      {Content()}
+    </Sheet>
+  );
+};
+
+export default BottomSheet;

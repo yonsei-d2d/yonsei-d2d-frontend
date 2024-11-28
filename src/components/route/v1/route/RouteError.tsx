@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { Mode } from "../../enums/mode.enum";
-import { PreviewContent } from "../bottom-sheet/PreviewContent";
-import { SheetPage } from "../bottom-sheet/SheetPage";
+import { Mode } from "../../../../enums/mode.enum";
+import { SheetPage } from "../../../bottom-sheet/SheetPage";
+import { PreviewContent } from "../../../bottom-sheet/PreviewContent";
 
 
 const ErrorWrapper = styled.div`
