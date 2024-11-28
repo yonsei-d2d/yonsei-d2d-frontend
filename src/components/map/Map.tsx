@@ -36,6 +36,7 @@ const RouteLayer = () => {
   const { targetLocation, routeResponse, mapMode } = useRouteMap();
 
   const [markerList, setMarkerList] = useState<Coordinates[]>([]);
+  const [routeMarkerList, setRouteMarkerList] = useState<Coordinates[]>([]);
 
   const map = useMap();
   const routePolyLine = useRef<any>(null);
@@ -50,14 +51,21 @@ const RouteLayer = () => {
     setMarkerList([]);
   };
 
+  const removeRouteMarker = () => {
+    // Remove Markers
+    setRouteMarkerList([]);
+  };
+
   useEffect(() => {
     if (mapMode === MapMode.NONE) {
       removePolyLine();
+      removeRouteMarker();
       removeMarker();
     }
 
     if (mapMode === MapMode.MARKER && targetLocation) {
       removePolyLine();
+      removeRouteMarker();
       setMarkerList([targetLocation]);
       map.flyTo([targetLocation.latitude, targetLocation.longitude, 16]);
     }
@@ -65,6 +73,11 @@ const RouteLayer = () => {
     if (mapMode === MapMode.ROUTE && routeResponse) {
       removeMarker();
       const decodedPath = routeResponse.path.map((e) => [e.lat, e.lng]);
+
+      routeResponse.waypoints.map((e) => {
+        routeMarkerList.push({latitude: e.lat, longitude: e.lng});
+      })
+
       if (decodedPath.length > 0) {
         const origin = routeResponse.waypoints[0];
         map.flyTo([origin.lat, origin.lng, 16]);
@@ -88,6 +101,13 @@ const RouteLayer = () => {
   return (
     <>
       {markerList.map((e, i) => (
+        <Marker
+          key={i}
+          icon={icon}
+          position={[e.latitude, e.longitude]}
+        ></Marker>
+      ))}
+      {routeMarkerList.map((e, i) => (
         <Marker
           key={i}
           icon={icon}

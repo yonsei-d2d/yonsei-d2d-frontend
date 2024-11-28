@@ -14,6 +14,8 @@ interface MapContextType {
 
   targetLocation: LocationResponse | null;
 
+  assistantMessage: string | null;
+
   setMapMode: (mapMode: MapMode) => void;
   setRouteResponse: (data: RouteResponse | null) => void;
 
@@ -21,6 +23,8 @@ interface MapContextType {
   setRouteDestination: (input: RouteTarget) => void;
   
   setTargetLocation: (data: LocationResponse | null) => void;
+
+  setAssistantMessage: (data: string | null) => void;
 }
 
 const MapContext = createContext<MapContextType | undefined>(undefined);
@@ -32,10 +36,12 @@ export const MapProvider = ({ children }: { children: React.ReactNode }) => {
   const [routeDestination, setRouteDestination] = useState<RouteTarget>(null);
   const [routeResponse, setRouteResponse] = useState<RouteResponse | null>(null);
 
+  const [assistantMessage, setAssistantMessage] = useState<string | null>(null);
+
   const [targetLocation, setTargetLocation] = useState<LocationResponse | null>(null);
 
   return (
-    <MapContext.Provider value={{ targetLocation, setTargetLocation, mapMode, setMapMode, routeResponse, setRouteResponse, routeOrigin, setRouteOrigin, routeDestination, setRouteDestination }}>
+    <MapContext.Provider value={{ assistantMessage, setAssistantMessage, targetLocation, setTargetLocation, mapMode, setMapMode, routeResponse, setRouteResponse, routeOrigin, setRouteOrigin, routeDestination, setRouteDestination }}>
       {children}
     </MapContext.Provider>
   );

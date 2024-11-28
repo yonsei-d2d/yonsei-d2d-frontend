@@ -2,10 +2,14 @@ import { Mode } from "../../enums/mode.enum";
 import { SheetPage } from "../bottom-sheet/SheetPage";
 import { PreviewContent } from "../bottom-sheet/PreviewContent";
 import styled from "styled-components";
-import { Button, Form, InputGroup } from "react-bootstrap";
+import { Alert, Button, Form, InputGroup, Spinner } from "react-bootstrap";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { useSheet } from "../../contexts/SheetContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouteMap } from "../../contexts/MapContext";
+import { AssistantRequest } from "../../interfaces/assistant-request.interface";
+import { AssistantResponse } from "../../interfaces/assistant-response.interface";
+import axios from "axios";
 
 
 const SearchContainer = styled.div`
@@ -24,6 +28,17 @@ const SearchButton = styled(Button)`
   width: 100%;
 ` as typeof Button;
 
+const LoadingWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  margin-top: 20px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+`;
+
+
 export const Assistant = () => {
     const {hideSearchBar, setHideSearchBar} = useSheet();
     useEffect(() => {
@@ -31,13 +46,66 @@ export const Assistant = () => {
     return () => {
       setHideSearchBar(false);
     };
-    }, [])
+    }, []);
+
+
+    const { assistantMessage, setTargetLocation, setRouteResponse, setAssistantMessage } = useRouteMap();
+    const { goTo } = useSheet();
+    const [isLoading, setIsLoading] = useState(false);
+    const [isError, setIsError] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      const form = e.target as HTMLFormElement;
+      const query = (form.elements.namedItem('query') as HTMLInputElement).value;
+      const request: AssistantRequest = {query};
+  
+      try {
+        setIsLoading(true);
+        setIsError(false);
+        const { data } = await axios.post<AssistantResponse>('/assistant', request, { headers: { 'Content-Type': 'application/json',}});
+        setAssistantMessage(data.answer);
+        if (data?.route) {
+          setRouteResponse(data.route);
+          goTo(Mode.ASSISTANT_ROUTE_RESULT);
+        } else if (data?.location) {
+          setTargetLocation(data.location);
+          goTo(Mode.ASSISTANT_MARKER_RESULT);
+        } else {
+          setIsError(true);
+        }
+      } catch (error) {
+        setRouteResponse(null);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
     return (
       <SheetPage title="AI Assistant" mode={Mode.ASSISTANT}>
+        {isLoading
+        ?
           <PreviewContent>
+            <LoadingWrapper>
+              <Spinner variant="primary"></Spinner>
+              <div style={{ margin: '10px' }}></div>
+              AI Assistant가 요청을 분석하고 있어요.
+            </LoadingWrapper>
+          </PreviewContent> 
+        :
+        <>
+          <PreviewContent>
+            {
+              isError ?
+                <Alert variant="danger">
+                  {assistantMessage}
+                </Alert>
+              : <></>
+            }
             <SearchContainer>
-              <Form >
-                <AssistantForm>
+              <Form onSubmit={handleSubmit}>
+                <AssistantForm >
                     <InputGroupText>✨</InputGroupText>
                     <Form.Control
                         type="text"
@@ -52,6 +120,8 @@ export const Assistant = () => {
               </Form>
             </SearchContainer>
           </PreviewContent>
+        </>
+        }
       </SheetPage>
     );
 }

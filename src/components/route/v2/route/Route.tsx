@@ -9,6 +9,7 @@ import { SheetPage } from "../../../bottom-sheet/SheetPage";
 import { PreviewContent } from "../../../bottom-sheet/PreviewContent";
 import styled from "styled-components";
 import {
+  Alert,
   Button,
   Form,
   Spinner,
@@ -41,6 +42,7 @@ export const Route = () => {
   const { hideSearchBar, setHideSearchBar } = useSheet();
   const { goTo } = useSheet();
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     if (!hideSearchBar) setHideSearchBar(true);
@@ -58,6 +60,7 @@ export const Route = () => {
     }
 
     try {
+      setIsError(false);
       setIsLoading(true);
       const { data } = await axios.post<RouteResponse>("/route", request, {
         headers: { "Content-Type": "application/json" },
@@ -65,8 +68,8 @@ export const Route = () => {
       setRouteResponse(data);
       goTo(Mode.ROUTE_RESULT);
     } catch (error) {
+      setIsError(true);
       setRouteResponse(null);
-      goTo(Mode.ROUTE_ERROR);
     } finally {
       setIsLoading(false);
     }
@@ -77,12 +80,20 @@ export const Route = () => {
       {isLoading ? (
         <PreviewContent>
           <LoadingWrapper>
-            <Spinner></Spinner>
+            <Spinner variant="primary"></Spinner>
+            <div style={{ margin: '10px' }}></div>
             경로를 탐색중입니다
           </LoadingWrapper>
         </PreviewContent>
       ) : (
         <PreviewContent>
+          {
+            isError ?
+              <Alert variant="danger">
+                경로를 찾을 수 없습니다. 강의실 이름이 올바른지 확인해주세요.
+              </Alert>
+            : <></>
+          }
           <SearchContainer>
             <Form onSubmit={handleSubmit}>
               <RouteEntry target="origin"></RouteEntry>
