@@ -1,4 +1,4 @@
-import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import styled from "styled-components";
 import "leaflet/dist/leaflet.css";
 import { useRouteMap } from "../../contexts/MapContext";
@@ -17,10 +17,42 @@ const MapWrapper = styled.div`
   height: 100dvh;
 `;
 
-interface Coordinates {
+interface MarkerProperties {
   latitude: number;
   longitude: number;
+  popup?: string;
 }
+
+const CustomMarker = ({
+  properties,
+  icon,
+}: {
+  properties: MarkerProperties;
+  icon: L.Icon;
+}) => {
+  let popupRef = useRef<any>(null);
+  const map = useMap();
+
+  useEffect(() => {
+    if (popupRef.current) popupRef.current.openPopup();
+  }, [popupRef, map]);
+
+  return (
+    <Marker
+      ref={popupRef}
+      icon={icon}
+      position={[properties.latitude, properties.longitude]}
+    >
+      {properties.popup ? (
+        <Popup autoClose={false} closeOnClick={false}>
+          {properties.popup}
+        </Popup>
+      ) : (
+        <></>
+      )}
+    </Marker>
+  );
+};
 
 const RouteLayer = () => {
   const icon = new L.Icon({
@@ -35,8 +67,7 @@ const RouteLayer = () => {
 
   const { targetLocation, routeResponse, mapMode } = useRouteMap();
 
-  const [markerList, setMarkerList] = useState<Coordinates[]>([]);
-  const [routeMarkerList, setRouteMarkerList] = useState<Coordinates[]>([]);
+  const [markerList, setMarkerList] = useState<MarkerProperties[]>([]);
 
   const map = useMap();
   const routePolyLine = useRef<any>(null);
@@ -51,22 +82,22 @@ const RouteLayer = () => {
     setMarkerList([]);
   };
 
-  const removeRouteMarker = () => {
-    // Remove Markers
-    setRouteMarkerList([]);
-  };
-
   useEffect(() => {
     if (mapMode === MapMode.NONE) {
       removePolyLine();
-      removeRouteMarker();
       removeMarker();
     }
 
     if (mapMode === MapMode.MARKER && targetLocation) {
       removePolyLine();
-      removeRouteMarker();
-      setMarkerList([targetLocation]);
+      removeMarker();
+      setMarkerList([
+        {
+          latitude: targetLocation.latitude,
+          longitude: targetLocation.longitude,
+          popup: targetLocation?.name,
+        },
+      ]);
       map.flyTo([targetLocation.latitude, targetLocation.longitude, 16]);
     }
 
@@ -74,9 +105,13 @@ const RouteLayer = () => {
       removeMarker();
       const decodedPath = routeResponse.path.map((e) => [e.lat, e.lng]);
 
-      routeResponse.waypoints.map((e) => {
-        routeMarkerList.push({latitude: e.lat, longitude: e.lng});
-      })
+      setMarkerList(
+        routeResponse.waypoints.map((e) => ({
+          latitude: e.lat,
+          longitude: e.lng,
+          popup: e.name,
+        }))
+      );
 
       if (decodedPath.length > 0) {
         const origin = routeResponse.waypoints[0];
@@ -100,20 +135,9 @@ const RouteLayer = () => {
 
   return (
     <>
-      {markerList.map((e, i) => (
-        <Marker
-          key={i}
-          icon={icon}
-          position={[e.latitude, e.longitude]}
-        ></Marker>
-      ))}
-      {routeMarkerList.map((e, i) => (
-        <Marker
-          key={i}
-          icon={icon}
-          position={[e.latitude, e.longitude]}
-        ></Marker>
-      ))}
+      {markerList.map((e, i) => {
+        return <CustomMarker key={i} icon={icon} properties={e}></CustomMarker>;
+      })}
     </>
   );
 };

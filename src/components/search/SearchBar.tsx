@@ -31,7 +31,7 @@ const FloatingSearchBarContainer = styled.div<{ $hideSearchBar: boolean }>`
 
 const SearchListGroup = styled(ListGroup)`
   max-height: 300px;
-  overflow:scroll;
+  overflow: scroll;
   -webkit-overflow-scrolling: touch;
 ` as typeof ListGroup;
 
@@ -119,17 +119,21 @@ const SearchBar = () => {
   const highlightSearchResult = (text: string) => {
     const spl = text.split(debouncedQuery);
     const splS = spl.slice(0, -1);
-    return <>
-      &nbsp;
-      {splS.map((e) => {
-        return <>
-          <>{e}</>
-          <strong>{debouncedQuery}</strong>
-        </>
-      })}
-      <>{spl.at(-1)}</>
-    </>
-  }
+    return (
+      <>
+        &nbsp;
+        {splS.map((e, i) => {
+          return (
+            <span key={i}>
+              <>{e}</>
+              <strong>{debouncedQuery}</strong>
+            </span>
+          );
+        })}
+        <>{spl.at(-1)}</>
+      </>
+    );
+  };
 
   return (
     <FloatingSearchBarContainer $hideSearchBar={hideSearchBar}>
@@ -160,7 +164,7 @@ const SearchBar = () => {
                   onClick={() => onClickSearchResult(i)}
                   key={i}
                 >
-                  <CategoryEmojiUtil type={e.type} />
+                  <CategoryEmojiUtil key={i} type={e.type} />
                   {` `}
                   {highlightSearchResult(e.name)}
                 </ListGroup.Item>
