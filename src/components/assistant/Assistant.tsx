@@ -75,6 +75,7 @@ export const Assistant = () => {
           setIsError(true);
         }
       } catch (error) {
+        setAssistantMessage("요청을 처리하는 중 오류가 발생했어요.")
         setRouteResponse(null);
         setIsError(true);
       } finally {
