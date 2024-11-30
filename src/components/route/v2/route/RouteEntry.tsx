@@ -28,7 +28,7 @@ const RouteForm = styled(InputGroup)`
 const SearchResultListGroup = styled(ListGroup)`
   margin-top: 20px;
   max-height: 200px;
-  overflow:scroll;
+  overflow: scroll;
   -webkit-overflow-scrolling: touch;
 ` as typeof ListGroup;
 
@@ -43,7 +43,8 @@ export const RouteEntry = ({
   target: "origin" | "destination";
 }) => {
   const [currentType, setCurrentType] = useState(RouteType.ROOM);
-  const { routeOrigin, routeDestination, setRouteOrigin, setRouteDestination } = useRouteMap();
+  const { routeOrigin, routeDestination, setRouteOrigin, setRouteDestination } =
+    useRouteMap();
   const [inputValue, setInputValue] = useState<string>("");
   const [searchResults, setSearchResults] = useState<LocationResponse[]>([]);
   const [debouncedQuery, setDebouncedQuery] = useState(inputValue);
@@ -52,7 +53,7 @@ export const RouteEntry = ({
 
   useEffect(() => {
     resetRouteRequest();
-  }, [])
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -76,7 +77,7 @@ export const RouteEntry = ({
       try {
         const request: SearchLocationRequest = { query: inputValue };
         const { data } = await axios.post<LocationResponse[]>(
-          "/location/search",
+          (process.env.REACT_APP_ENDPOINT || "") + "/location/search",
           request,
           { headers: { "Content-Type": "application/json" } }
         );
@@ -109,7 +110,6 @@ export const RouteEntry = ({
     setShowResult(false);
   };
 
-
   const setRouteRequestByRoom = (i: string) => {
     if (target === "origin") {
       setRouteOrigin({
@@ -122,8 +122,7 @@ export const RouteEntry = ({
         room: i,
       });
     }
-  }
-
+  };
 
   const resetRouteRequest = () => {
     if (target === "origin") {
@@ -131,7 +130,7 @@ export const RouteEntry = ({
     } else {
       setRouteDestination(null);
     }
-  }
+  };
 
   const routeTypeToString = (type: RouteType) => {
     switch (type) {
@@ -148,7 +147,7 @@ export const RouteEntry = ({
     if (target === "origin" && routeOrigin != null) return;
     if (target === "destination" && routeDestination != null) return;
     setInputValue(input);
-  }
+  };
 
   const DropdownGenerator = () => {
     return (
@@ -223,17 +222,21 @@ export const RouteEntry = ({
   const highlightSearchResult = (text: string) => {
     const spl = text.split(debouncedQuery);
     const splS = spl.slice(0, -1);
-    return <>
-      &nbsp;
-      {splS.map((e) => {
-        return <>
-          <>{e}</>
-          <strong>{debouncedQuery}</strong>
-        </>
-      })}
-      <>{spl.at(-1)}</>
-    </>
-  }
+    return (
+      <>
+        &nbsp;
+        {splS.map((e) => {
+          return (
+            <>
+              <>{e}</>
+              <strong>{debouncedQuery}</strong>
+            </>
+          );
+        })}
+        <>{spl.at(-1)}</>
+      </>
+    );
+  };
 
   return (
     <RouteEntryWrapper>
@@ -250,7 +253,9 @@ export const RouteEntry = ({
               {searchResults.map((e, i) => (
                 <ListGroup.Item
                   action
-                  onClick={() => {setRouteRequestByLocation(i)}}
+                  onClick={() => {
+                    setRouteRequestByLocation(i);
+                  }}
                   key={i}
                 >
                   <CategoryEmojiUtil type={e.type} />

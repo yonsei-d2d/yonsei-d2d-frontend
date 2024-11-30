@@ -83,7 +83,7 @@ const SearchBar = () => {
       try {
         const request: SearchLocationRequest = { query };
         const { data } = await axios.post<LocationResponse[]>(
-          "/location/search",
+          (process.env.REACT_APP_ENDPOINT || "") + "/location/search",
           request,
           { headers: { "Content-Type": "application/json" } }
         );

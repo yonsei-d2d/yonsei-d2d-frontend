@@ -153,7 +153,7 @@ const Map = () => {
         attributionControl={false}
         style={{ height: "100%", width: "100%" }}
         maxBounds={L.latLngBounds(
-          L.latLng(37.5578353, 126.9477351),
+          L.latLng(37.5569883, 126.9475715),
           L.latLng(37.5719375, 126.9279973)
         )}
       >

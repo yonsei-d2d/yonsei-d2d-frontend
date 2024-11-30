@@ -9,7 +9,7 @@ RUN yarn install --freeze-lockfile
 
 COPY . .
 
-RUN yarn build
+RUN REACT_APP_ENDPOINT=https://api.otp.1d3rfuld.xyz yarn build
 
 FROM --platform=linux/amd64 nginx:stable-alpine
 
