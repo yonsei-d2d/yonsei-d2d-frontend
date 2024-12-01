@@ -125,7 +125,7 @@ const RouteResult = () => {
                       <Flag></Flag>
                     </WaypointIconWrapper>
                     <strong>{e.name}</strong>
-                    { e.level ? <small style={{color: "gray"}}>&nbsp;{`(${e.level}층)`.replace('-', '지하')}</small> : "" }
+                    { e.level ? <small style={{color: "gray"}}>&nbsp;{`${e.level}층`.replace('-', '지하')}</small> : "" }
                   </WaypointListWrapper>
                 );
               }
