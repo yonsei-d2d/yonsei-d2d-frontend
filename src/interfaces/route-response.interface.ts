@@ -3,6 +3,7 @@ export interface RouteResponse {
   duration: number;
   distance: number;
   waypoints: RouteLocation[];
+  stopovers: RouteLocation[];
   guide: string[];
 }
 

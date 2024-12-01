@@ -8,6 +8,8 @@ import { LocationResponse } from "../../interfaces/location-response.interface";
 import axios from "axios";
 import { useRouteMap } from "../../contexts/MapContext";
 import { CategoryEmojiUtil } from "../../utils/emoji-util";
+import { Search } from "react-bootstrap-icons";
+import MainIcon from "../../assets/images/icon2x.png";
 
 const FloatingSearchBarContainer = styled.div<{ $hideSearchBar: boolean }>`
   position: fixed;
@@ -23,7 +25,6 @@ const FloatingSearchBarContainer = styled.div<{ $hideSearchBar: boolean }>`
   padding: 10px 10px;
   display: flex;
   align-items: center;
-  display: flex;
   flex-direction: column;
 
   transition: top 0.3s ease-in-out;
@@ -36,9 +37,29 @@ const SearchListGroup = styled(ListGroup)`
 ` as typeof ListGroup;
 
 const StyledFormControl = styled(Form.Control)`
+  border: none;
   flex-grow: 1;
   border-radius: 4px;
 `;
+
+const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  aspect-ratio: 1 / 1;
+  width: auto;
+  height: 100%;
+  text-align: center;
+  margin: 0 10px;
+`;
+
+
+const SearchForm = styled(Form)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 
 const SearchResult = styled.div`
   width: 100%;
@@ -126,7 +147,7 @@ const SearchBar = () => {
           return (
             <span key={i}>
               <>{e}</>
-              <strong>{debouncedQuery}</strong>
+              <strong style={{color: "#003876",}}>{debouncedQuery}</strong>
             </span>
           );
         })}
@@ -137,11 +158,16 @@ const SearchBar = () => {
 
   return (
     <FloatingSearchBarContainer $hideSearchBar={hideSearchBar}>
-      <Form
+      <SearchForm
         className="d-flex"
         style={{ width: "100%" }}
         onSubmit={(e) => e.preventDefault()}
       >
+        <img style={{
+          aspectRatio: '1 / 1',
+          objectFit: 'contain',
+          height: '30px'
+        }} src={MainIcon} />
         <StyledFormControl
           onFocus={onFocusHandler}
           onBlur={onBlurHandler}
@@ -149,11 +175,17 @@ const SearchBar = () => {
           onChange={(e) => {
             setQuery(e.target.value);
           }}
+          style={{
+            color: '#003876 !important'
+          }}
           type="search"
           placeholder="장소 검색"
           aria-label="Search"
         />
-      </Form>
+        <IconWrapper>
+          <Search color="#003876"></Search>
+        </IconWrapper>
+      </SearchForm>
       {focus ? (
         results.length > 0 ? (
           <SearchResult>

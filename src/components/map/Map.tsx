@@ -6,8 +6,8 @@ import { decode } from "@mapbox/polyline";
 import { useEffect, useRef, useState } from "react";
 import { MapMode } from "../../enums/map-mode.enum";
 import L from "leaflet";
-import markerIcon from "../../assets/images/marker-icon.png";
-import markerIcon2x from "../../assets/images/marker-icon-2x.png";
+import markerIcon from "../../assets/images/marker.png";
+import markerIcon2x from "../../assets/images/marker2x.png";
 import markerShadow from "../../assets/images/marker-shadow.png";
 
 const AntPath = require("leaflet-ant-path");
@@ -59,10 +59,11 @@ const RouteLayer = () => {
     iconUrl: markerIcon,
     iconRetinaUrl: markerIcon2x,
     shadowUrl: markerShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
+    iconSize: [35, 35],
+    iconAnchor: [16, 35],
     popupAnchor: [1, -34],
-    shadowSize: [41, 41],
+    shadowSize: [40, 40],
+    shadowAnchor: [12, 40],
   });
 
   const { targetLocation, routeResponse, mapMode } = useRouteMap();
@@ -106,7 +107,7 @@ const RouteLayer = () => {
       const decodedPath = routeResponse.path.map((e) => [e.lat, e.lng]);
 
       setMarkerList(
-        routeResponse.waypoints.map((e) => ({
+        routeResponse.stopovers.map((e) => ({
           latitude: e.lat,
           longitude: e.lng,
           popup: e.name,
@@ -119,10 +120,10 @@ const RouteLayer = () => {
 
         const antPolyline = AntPath.antPath(decodedPath, {
           options: {
-            color: "#0275d8",
             weight: 3,
-            opacity: 0.5,
+            opacity: 0.8,
           },
+          color: "#003876",
           pulseColor: "#ffffff",
           delay: 1000,
         });
@@ -153,11 +154,11 @@ const Map = () => {
         attributionControl={false}
         style={{ height: "100%", width: "100%" }}
         maxBounds={L.latLngBounds(
-          L.latLng(37.5569883, 126.9475715),
-          L.latLng(37.5719375, 126.9279973)
+          L.latLng(37.5507211, 126.9510584),
+          L.latLng(37.5737023, 126.925849)
         )}
       >
-        <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png" />
+        <TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png" />
         <RouteLayer />
       </MapContainer>
     </MapWrapper>
