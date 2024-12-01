@@ -15,20 +15,29 @@ import axios from "axios";
 import { LocationResponse } from "../../../../interfaces/location-response.interface";
 import { CategoryEmojiUtil } from "../../../../utils/emoji-util";
 import { useSheet } from "../../../../contexts/SheetContext";
+import { Flag, GeoAlt } from "react-bootstrap-icons";
 
 const RouteEntryWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: start;
   margin-bottom: 20px;
 `;
 
-const RouteForm = styled(InputGroup)`
-  width: 100%;
+const RouteForm = styled.div`
+  width: 150px;
   display: flex;
-` as typeof InputGroup;
+  align-items: center;
+`;
+
+const IconWrapper = styled.div`
+  font-size: 1.5em;
+`;
 
 const SearchResultListGroup = styled(ListGroup)`
-  margin-top: 20px;
   max-height: 200px;
-  overflow:scroll;
+  overflow: scroll;
   -webkit-overflow-scrolling: touch;
 ` as typeof ListGroup;
 
@@ -43,7 +52,8 @@ export const RouteEntry = ({
   target: "origin" | "destination";
 }) => {
   const [currentType, setCurrentType] = useState(RouteType.ROOM);
-  const { routeOrigin, routeDestination, setRouteOrigin, setRouteDestination } = useRouteMap();
+  const { routeOrigin, routeDestination, setRouteOrigin, setRouteDestination } =
+    useRouteMap();
   const [inputValue, setInputValue] = useState<string>("");
   const [searchResults, setSearchResults] = useState<LocationResponse[]>([]);
   const [debouncedQuery, setDebouncedQuery] = useState(inputValue);
@@ -52,7 +62,7 @@ export const RouteEntry = ({
 
   useEffect(() => {
     resetRouteRequest();
-  }, [])
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -76,7 +86,7 @@ export const RouteEntry = ({
       try {
         const request: SearchLocationRequest = { query: inputValue };
         const { data } = await axios.post<LocationResponse[]>(
-          "/location/search",
+          (process.env.REACT_APP_ENDPOINT || "") + "/location/search",
           request,
           { headers: { "Content-Type": "application/json" } }
         );
@@ -109,7 +119,6 @@ export const RouteEntry = ({
     setShowResult(false);
   };
 
-
   const setRouteRequestByRoom = (i: string) => {
     if (target === "origin") {
       setRouteOrigin({
@@ -122,8 +131,7 @@ export const RouteEntry = ({
         room: i,
       });
     }
-  }
-
+  };
 
   const resetRouteRequest = () => {
     if (target === "origin") {
@@ -131,7 +139,7 @@ export const RouteEntry = ({
     } else {
       setRouteDestination(null);
     }
-  }
+  };
 
   const routeTypeToString = (type: RouteType) => {
     switch (type) {
@@ -140,7 +148,7 @@ export const RouteEntry = ({
       case RouteType.LOCATION_ID:
         return "장소 검색";
       case RouteType.ROOM:
-        return "강의실 명";
+        return "강의실 이름";
     }
   };
 
@@ -148,27 +156,36 @@ export const RouteEntry = ({
     if (target === "origin" && routeOrigin != null) return;
     if (target === "destination" && routeDestination != null) return;
     setInputValue(input);
-  }
+  };
 
   const DropdownGenerator = () => {
     return (
-      <DropdownButton
-        title={routeTypeToString(currentType)}
-        variant="outline-secondary"
-      >
-        {Object.values(RouteType).map((e, i) => (
-          <Dropdown.Item
-            key={i}
-            onClick={() => {
-              setInputValue("");
-              resetRouteRequest();
-              setCurrentType(e);
-            }}
-          >
-            {routeTypeToString(RouteType[e])}
-          </Dropdown.Item>
-        ))}
-      </DropdownButton>
+      <Dropdown>
+        <Dropdown.Toggle style={{
+          width: '120px',
+          backgroundColor: 'transparent',
+          border: '0',
+          color: 'black'
+        }}>
+          {routeTypeToString(currentType)}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          {Object.values(RouteType).map((e, i) => {
+            if ((e === RouteType.COORDINATES)) return null;
+            return <Dropdown.Item
+              style={{border: '0'}}
+              key={i}
+              onClick={() => {
+                setInputValue("");
+                resetRouteRequest();
+                setCurrentType(e);
+              }}
+            >
+              {routeTypeToString(RouteType[e])}
+            </Dropdown.Item>
+          })}
+        </Dropdown.Menu>
+      </Dropdown>
     );
   };
 
@@ -180,6 +197,11 @@ export const RouteEntry = ({
             type="text"
             name={target}
             value={inputValue}
+            style={{
+              border: '0',
+              borderRadius: '0',
+              borderBottom: '1px solid gray'
+            }}
             onChange={(e) => {
               setInputValue(e.target.value);
               setRouteRequestByRoom(e.target.value);
@@ -195,16 +217,31 @@ export const RouteEntry = ({
             type="text"
             name={target}
             value={"현재 위치"}
+            style={{
+              border: '0',
+              borderRadius: '0',
+              borderBottom: '1px solid gray'
+            }}
             placeholder="현재 위치"
             required
           />
         );
       case RouteType.LOCATION_ID:
         return (
+          <div style={{
+            display: 'flex',
+            width: '100%',
+            flexDirection: 'column'
+          }}>
           <Form.Control
             type="text"
             name={target}
             value={inputValue}
+            style={{
+              border: '0',
+              borderRadius: '0',
+              borderBottom: '1px solid gray'
+            }}
             onChange={(e) => {
               searchLocation(e.target.value);
             }}
@@ -216,6 +253,29 @@ export const RouteEntry = ({
             placeholder="장소 검색"
             required
           />
+          {showResult ? (
+            searchResults.length > 0 ? (
+              <SearchResult>
+                <SearchResultListGroup>
+                  {searchResults.map((e, i) => (
+                    <ListGroup.Item
+                      className="border-0"
+                      action
+                      onClick={() => setRouteRequestByLocation(i)}
+                      key={i}
+                    >
+                      {highlightSearchResult(e.name)}
+                    </ListGroup.Item>
+                  ))}
+                </SearchResultListGroup>
+              </SearchResult>
+            ) : (
+              <ListGroup></ListGroup>
+            )
+          ) : (
+            <></>
+          )}
+          </div>
         );
     }
   };
@@ -223,48 +283,31 @@ export const RouteEntry = ({
   const highlightSearchResult = (text: string) => {
     const spl = text.split(debouncedQuery);
     const splS = spl.slice(0, -1);
-    return <>
-      &nbsp;
-      {splS.map((e) => {
-        return <>
-          <>{e}</>
-          <strong>{debouncedQuery}</strong>
-        </>
-      })}
-      <>{spl.at(-1)}</>
-    </>
-  }
+    return (
+      <>
+        &nbsp;
+        {splS.map((e, i) => {
+          return (
+            <span style={{color: "gray"}} key={i}>
+              <>{e}</>
+              <strong style={{color: "#003876"}}>{debouncedQuery}</strong>
+            </span>
+          );
+        })}
+        <span style={{color: "gray"}}>{spl.at(-1)}</span>
+      </>
+    );
+  };
 
   return (
     <RouteEntryWrapper>
       <RouteForm>
+        <IconWrapper>
+          {target === "origin" ? <GeoAlt color="#79A8DD"></GeoAlt> : <Flag color="#79A8DD"></Flag>}
+        </IconWrapper>
         {DropdownGenerator()}
-        {FormGenerator()}
-        <InputGroupText>{target === "origin" ? "출발" : "도착"}</InputGroupText>
       </RouteForm>
-
-      {currentType === RouteType.LOCATION_ID && showResult ? (
-        searchResults.length > 0 ? (
-          <SearchResult>
-            <SearchResultListGroup>
-              {searchResults.map((e, i) => (
-                <ListGroup.Item
-                  action
-                  onClick={() => {setRouteRequestByLocation(i)}}
-                  key={i}
-                >
-                  <CategoryEmojiUtil type={e.type} />
-                  {highlightSearchResult(e.name)}
-                </ListGroup.Item>
-              ))}
-            </SearchResultListGroup>
-          </SearchResult>
-        ) : (
-          <ListGroup></ListGroup>
-        )
-      ) : (
-        <></>
-      )}
+      {FormGenerator()}
     </RouteEntryWrapper>
   );
 };

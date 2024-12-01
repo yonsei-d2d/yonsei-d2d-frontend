@@ -8,23 +8,37 @@ import { useEffect, useState } from "react";
 import { SheetPage } from "../../../bottom-sheet/SheetPage";
 import { PreviewContent } from "../../../bottom-sheet/PreviewContent";
 import styled from "styled-components";
-import {
-  Button,
-  Form,
-  Spinner,
-} from "react-bootstrap";
+import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import { RouteEntry } from "./RouteEntry";
+import { Cursor } from "react-bootstrap-icons";
 
 const SearchContainer = styled.div`
   padding: 0px;
   margin: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 `;
 
-const SearchButton = styled(Button)`
-  width: 100%;
-` as typeof Button;
+const SearchButton = styled.button`
+  border: none;
+  outline: none;
+  background-color: #79A8DD;
+  color: white;
+  height: 2.5em;
+  width: 200px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:invalid {
+    background-color: #79A8DD;
+  }
+  &:active {
+    background-color: #003876;
+  }
+`;
 
 const LoadingWrapper = styled.div`
   width: 100%;
@@ -41,6 +55,7 @@ export const Route = () => {
   const { hideSearchBar, setHideSearchBar } = useSheet();
   const { goTo } = useSheet();
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     if (!hideSearchBar) setHideSearchBar(true);
@@ -55,18 +70,23 @@ export const Route = () => {
     const request: RouteRequest = {
       origin: routeOrigin,
       destination: routeDestination,
-    }
+    };
 
     try {
+      setIsError(false);
       setIsLoading(true);
-      const { data } = await axios.post<RouteResponse>("/route", request, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const { data } = await axios.post<RouteResponse>(
+        (process.env.REACT_APP_ENDPOINT || "") + "/route",
+        request,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       setRouteResponse(data);
       goTo(Mode.ROUTE_RESULT);
     } catch (error) {
+      setIsError(true);
       setRouteResponse(null);
-      goTo(Mode.ROUTE_ERROR);
     } finally {
       setIsLoading(false);
     }
@@ -77,19 +97,34 @@ export const Route = () => {
       {isLoading ? (
         <PreviewContent>
           <LoadingWrapper>
-            <Spinner></Spinner>
+            <div className="spinner-grow text-secondary"></div>
+            <div style={{ margin: "10px" }}></div>
             경로를 탐색중입니다
           </LoadingWrapper>
         </PreviewContent>
       ) : (
         <PreviewContent>
+          {isError ? (
+            <Alert variant="danger">
+              경로를 찾을 수 없습니다. 강의실 이름이 올바른지 확인해주세요.
+            </Alert>
+          ) : (
+            <></>
+          )}
           <SearchContainer>
             <Form onSubmit={handleSubmit}>
               <RouteEntry target="origin"></RouteEntry>
               <RouteEntry target="destination"></RouteEntry>
-              <SearchButton variant="primary" type="submit">
-                경로 검색
-              </SearchButton>
+              <div style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center'
+              }}>
+                <SearchButton type="submit">
+                  경로 검색&nbsp;&nbsp;
+                  <Cursor></Cursor>
+                </SearchButton>
+              </div>
             </Form>
           </SearchContainer>
         </PreviewContent>

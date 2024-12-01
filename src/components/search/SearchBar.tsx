@@ -8,6 +8,8 @@ import { LocationResponse } from "../../interfaces/location-response.interface";
 import axios from "axios";
 import { useRouteMap } from "../../contexts/MapContext";
 import { CategoryEmojiUtil } from "../../utils/emoji-util";
+import { Search } from "react-bootstrap-icons";
+import MainIcon from "../../assets/images/icon2x.png";
 
 const FloatingSearchBarContainer = styled.div<{ $hideSearchBar: boolean }>`
   position: fixed;
@@ -23,7 +25,6 @@ const FloatingSearchBarContainer = styled.div<{ $hideSearchBar: boolean }>`
   padding: 10px 10px;
   display: flex;
   align-items: center;
-  display: flex;
   flex-direction: column;
 
   transition: top 0.3s ease-in-out;
@@ -31,14 +32,34 @@ const FloatingSearchBarContainer = styled.div<{ $hideSearchBar: boolean }>`
 
 const SearchListGroup = styled(ListGroup)`
   max-height: 300px;
-  overflow:scroll;
+  overflow: scroll;
   -webkit-overflow-scrolling: touch;
 ` as typeof ListGroup;
 
 const StyledFormControl = styled(Form.Control)`
+  border: none;
   flex-grow: 1;
   border-radius: 4px;
 `;
+
+const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  aspect-ratio: 1 / 1;
+  width: auto;
+  height: 100%;
+  text-align: center;
+  margin: 0 10px;
+`;
+
+
+const SearchForm = styled(Form)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 
 const SearchResult = styled.div`
   width: 100%;
@@ -83,7 +104,7 @@ const SearchBar = () => {
       try {
         const request: SearchLocationRequest = { query };
         const { data } = await axios.post<LocationResponse[]>(
-          "/location/search",
+          (process.env.REACT_APP_ENDPOINT || "") + "/location/search",
           request,
           { headers: { "Content-Type": "application/json" } }
         );
@@ -102,7 +123,7 @@ const SearchBar = () => {
   };
 
   const onBlurHandler = () => {
-    if (results.length > 0) return;
+    if (query.length > 0) return;
     setQuery("");
     setFocus(false);
     goBack();
@@ -119,25 +140,35 @@ const SearchBar = () => {
   const highlightSearchResult = (text: string) => {
     const spl = text.split(debouncedQuery);
     const splS = spl.slice(0, -1);
-    return <>
-      &nbsp;
-      {splS.map((e) => {
-        return <>
-          <>{e}</>
-          <strong>{debouncedQuery}</strong>
-        </>
-      })}
-      <>{spl.at(-1)}</>
-    </>
-  }
+    return (
+      <>
+        &nbsp;
+        {splS.map((e, i) => {
+          return (
+            <span style={{color: "gray"}} key={i}>
+              <>{e}</>
+              <strong style={{color: "#003876"}}>{debouncedQuery}</strong>
+            </span>
+          );
+        })}
+        <span style={{color: "gray"}}>{spl.at(-1)}</span>
+      </>
+    );
+  };
 
   return (
     <FloatingSearchBarContainer $hideSearchBar={hideSearchBar}>
-      <Form
+      <SearchForm
         className="d-flex"
         style={{ width: "100%" }}
         onSubmit={(e) => e.preventDefault()}
       >
+        <img style={{
+          aspectRatio: '1 / 1',
+          objectFit: 'contain',
+          marginRight: '10px',
+          height: '30px'
+        }} src={MainIcon} />
         <StyledFormControl
           onFocus={onFocusHandler}
           onBlur={onBlurHandler}
@@ -145,23 +176,28 @@ const SearchBar = () => {
           onChange={(e) => {
             setQuery(e.target.value);
           }}
+          style={{
+            color: '#003876 !important'
+          }}
           type="search"
           placeholder="장소 검색"
           aria-label="Search"
         />
-      </Form>
+        <IconWrapper>
+          <Search color="#003876"></Search>
+        </IconWrapper>
+      </SearchForm>
       {focus ? (
         results.length > 0 ? (
           <SearchResult>
             <SearchListGroup>
               {results.map((e, i) => (
                 <ListGroup.Item
+                  className="border-0"
                   action
                   onClick={() => onClickSearchResult(i)}
                   key={i}
                 >
-                  <CategoryEmojiUtil type={e.type} />
-                  {` `}
                   {highlightSearchResult(e.name)}
                 </ListGroup.Item>
               ))}

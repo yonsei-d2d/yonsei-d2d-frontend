@@ -9,6 +9,8 @@ import { Assistant } from "../assistant/Assistant";
 import { Route } from "../route/v2/route/Route";
 import RouteResult from "../route/v2/route/RouteResult";
 import { RouteError } from "../route/v2/route/RouteError";
+import AssistantRouteResult from "../assistant/AssistantRouteResult";
+import AssistantMarkerResult from "../assistant/AssistantMarkerResult";
 
 const Sheet = styled.div<{
   $isExpanded: boolean;
@@ -94,6 +96,10 @@ const BottomSheet = () => {
       // ASSISTAT
       case Mode.ASSISTANT:
         return <Assistant></Assistant>;
+      case Mode.ASSISTANT_ROUTE_RESULT:
+        return <AssistantRouteResult></AssistantRouteResult>;
+      case Mode.ASSISTANT_MARKER_RESULT:
+        return <AssistantMarkerResult></AssistantMarkerResult>;
     }
   };
 

@@ -1,20 +1,34 @@
 import { Badge } from "react-bootstrap";
 import { LocationType } from "../enums/location-type.enum";
+import styled from "styled-components";
 
-export const CategoryTagUtil = ({type}: {type: LocationType}) => {
-    const getTag = (type: LocationType) => {
-        switch (type) {
-            case LocationType.BUILDING: return <Badge className="bg-secondary">건물</Badge>
-            case LocationType.CAFE: return <Badge className="bg-secondary">카페</Badge>
-            case LocationType.CAFETERIA: return <Badge className="bg-secondary">학식당</Badge>
-            case LocationType.CONVENIENCE: return <Badge className="bg-secondary">편의점</Badge>
-            case LocationType.RESTAURANT: return <Badge className="bg-secondary">식당</Badge>
-            case LocationType.STORE: return <Badge className="bg-secondary">상점</Badge>
-            default: return null;
-        }
+
+const Tag = styled.div`
+  background-color: #79A8DD;
+  color: white;
+  padding: 0 10px;
+  border-radius: 10px;
+`
+
+export const CategoryTagUtil = ({ type }: { type: LocationType }) => {
+  const getTag = (type: LocationType) => {
+    switch (type) {
+      case LocationType.BUILDING:
+        return <Tag><small>건물</small></Tag>;
+      case LocationType.CAFE:
+        return <Tag><small>카페</small></Tag>;
+      case LocationType.CAFETERIA:
+        return <Tag><small>학식당</small></Tag>;
+      case LocationType.CONVENIENCE:
+        return <Tag><small>편의점</small></Tag>;
+      case LocationType.RESTAURANT:
+        return <Tag><small>식당</small></Tag>;
+      case LocationType.STORE:
+        return <Tag><small>상점</small></Tag>;
+      default:
+        return <Tag><small>장소</small></Tag>;;
     }
+  };
 
-    return <>
-        {getTag(type)}
-    </>
-}
+  return <div>{getTag(type)}</div>;
+};

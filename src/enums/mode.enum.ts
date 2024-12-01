@@ -18,4 +18,6 @@ export enum Mode {
 
   // Assistant
   ASSISTANT = "assistant",
+  ASSISTANT_ROUTE_RESULT = "assistant_route_result",
+  ASSISTANT_MARKER_RESULT = "assistant_marker_result",
 }
