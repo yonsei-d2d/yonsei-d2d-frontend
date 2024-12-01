@@ -31,7 +31,7 @@ const SearchResult = () => {
   if (!targetLocation) return null;
 
   return (
-    <SheetPage title="상세 정보" mode={Mode.ROUTE_RESULT}>
+    <SheetPage title="상세 정보" mode={Mode.SEARCH_RESULT}>
       <PreviewContent>
         <ResultContainer>
           <ResultContentWrapper>
