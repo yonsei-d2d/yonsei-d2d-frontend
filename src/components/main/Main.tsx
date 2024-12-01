@@ -6,6 +6,7 @@ import { SheetPage } from "../bottom-sheet/SheetPage";
 import styled from "styled-components";
 import { MainContent } from "../bottom-sheet/MainContent";
 import { useEffect } from "react";
+import { Cursor, Geo, GeoAlt, Robot } from "react-bootstrap-icons";
 
 const IconWrapper = styled.div`
   display: flex;
@@ -41,7 +42,9 @@ export const Main = () => {
         <ListGroup>
           <ListGroup.Item action onClick={() => goTo(Mode.ROUTE)}>
             <ItemWrapper>
-              <IconWrapper>🗺️</IconWrapper>
+              <IconWrapper>
+                <Cursor color="#79A8DD"></Cursor>
+              </IconWrapper>
               <DescWrapper>
                 <h5 className="mb-1">길찾기</h5>
                 <small>강의실, 장소 이름으로 길찾기</small>
@@ -50,9 +53,11 @@ export const Main = () => {
           </ListGroup.Item>
           <ListGroup.Item action onClick={() => goTo(Mode.ASSISTANT)}>
             <ItemWrapper>
-              <IconWrapper>✨</IconWrapper>
+              <IconWrapper>
+                <Robot color="#79A8DD"></Robot>
+              </IconWrapper>
               <DescWrapper>
-                <h5 className="mb-1">AI Assistant</h5>
+                <h5 className="mb-1">AI 챗봇</h5>
                 <small>AI에게 요청하기</small>
               </DescWrapper>
             </ItemWrapper>

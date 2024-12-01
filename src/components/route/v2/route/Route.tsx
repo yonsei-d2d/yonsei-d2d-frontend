@@ -10,17 +10,35 @@ import { PreviewContent } from "../../../bottom-sheet/PreviewContent";
 import styled from "styled-components";
 import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import { RouteEntry } from "./RouteEntry";
+import { Cursor } from "react-bootstrap-icons";
 
 const SearchContainer = styled.div`
   padding: 0px;
   margin: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 `;
 
-const SearchButton = styled(Button)`
-  width: 100%;
-` as typeof Button;
+const SearchButton = styled.button`
+  border: none;
+  outline: none;
+  background-color: #79A8DD;
+  color: white;
+  height: 2.5em;
+  width: 200px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:invalid {
+    background-color: #79A8DD;
+  }
+  &:active {
+    background-color: #003876;
+  }
+`;
 
 const LoadingWrapper = styled.div`
   width: 100%;
@@ -79,7 +97,7 @@ export const Route = () => {
       {isLoading ? (
         <PreviewContent>
           <LoadingWrapper>
-            <Spinner variant="primary"></Spinner>
+            <div className="spinner-grow text-secondary"></div>
             <div style={{ margin: "10px" }}></div>
             경로를 탐색중입니다
           </LoadingWrapper>
@@ -97,9 +115,16 @@ export const Route = () => {
             <Form onSubmit={handleSubmit}>
               <RouteEntry target="origin"></RouteEntry>
               <RouteEntry target="destination"></RouteEntry>
-              <SearchButton variant="primary" type="submit">
-                경로 검색
-              </SearchButton>
+              <div style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center'
+              }}>
+                <SearchButton type="submit">
+                  경로 검색&nbsp;&nbsp;
+                  <Cursor></Cursor>
+                </SearchButton>
+              </div>
             </Form>
           </SearchContainer>
         </PreviewContent>

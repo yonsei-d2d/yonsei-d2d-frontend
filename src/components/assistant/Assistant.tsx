@@ -10,6 +10,7 @@ import { useRouteMap } from "../../contexts/MapContext";
 import { AssistantRequest } from "../../interfaces/assistant-request.interface";
 import { AssistantResponse } from "../../interfaces/assistant-response.interface";
 import axios from "axios";
+import { Robot } from "react-bootstrap-icons";
 
 const SearchContainer = styled.div`
   padding: 0px;
@@ -23,9 +24,25 @@ const AssistantForm = styled(InputGroup)`
   width: 100%;
 ` as typeof InputGroup;
 
-const SearchButton = styled(Button)`
-  width: 100%;
-` as typeof Button;
+const SearchButton = styled.button`
+  border: none;
+  outline: none;
+  background-color: #79A8DD;
+  color: white;
+  height: 2.5em;
+  width: 200px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:invalid {
+    background-color: #79A8DD;
+  }
+  &:active {
+    background-color: #003876;
+  }
+`;
 
 const LoadingWrapper = styled.div`
   width: 100%;
@@ -90,13 +107,13 @@ export const Assistant = () => {
   };
 
   return (
-    <SheetPage title="AI Assistant" mode={Mode.ASSISTANT}>
+    <SheetPage title="AI 챗봇" mode={Mode.ASSISTANT}>
       {isLoading ? (
         <PreviewContent>
           <LoadingWrapper>
-            <Spinner variant="primary"></Spinner>
+            <div className="spinner-grow text-secondary"></div>
             <div style={{ margin: "10px" }}></div>
-            AI Assistant가 요청을 분석하고 있어요.
+            AI가 요청을 분석하고 있어요.
           </LoadingWrapper>
         </PreviewContent>
       ) : (
@@ -110,17 +127,23 @@ export const Assistant = () => {
             <SearchContainer>
               <Form onSubmit={handleSubmit}>
                 <AssistantForm>
-                  <InputGroupText>✨</InputGroupText>
                   <Form.Control
                     type="text"
                     name="query"
-                    placeholder="공학관에서 경영관 가는 길에 카페 들리고 싶어"
+                    placeholder="예) 공학관에서 경영관 가는 길에 카페 들리고 싶어"
                     required
                   />
                 </AssistantForm>
-                <SearchButton variant="primary" type="submit">
-                  요청 하기
-                </SearchButton>
+                <div style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center'
+                }}>
+                  <SearchButton type="submit">
+                    요청하기&nbsp;&nbsp;
+                    <Robot></Robot>
+                  </SearchButton>
+                </div>
               </Form>
             </SearchContainer>
           </PreviewContent>

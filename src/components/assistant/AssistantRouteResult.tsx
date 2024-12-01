@@ -68,20 +68,20 @@ const AssistantRouteResult = () => {
   for (const stopover of routeResponse.stopovers) stopoverNameMap[stopover.name] = true;
 
   return (
-    <SheetPage title="경로 안내" mode={Mode.ASSISTANT_MARKER_RESULT}>
+    <SheetPage title="경로 안내" mode={Mode.ASSISTANT_ROUTE_RESULT}>
       <PreviewContent>
         <Alert variant="primary">{assistantMessage}</Alert>
         <RouteInfo>
           {
             routeResponse.stopovers.map((e, i) => {
-              if (i === routeResponse.stopovers.length - 1) return <small>{e.name}</small>
-              else return <small>{`${e.name} →`}&nbsp;</small>
+              if (i === routeResponse.stopovers.length - 1) return <small key={i}>{e.name}</small>
+              else return <small key={i}>{`${e.name} →`}&nbsp;</small>
             })
           }
         </RouteInfo>
         <RouteDetail>
           <RouteContentWrapper>
-            <h1 style={{ color: "#0275d8", margin: '0' }}>
+            <h1 style={{ color: "#79A8DD", margin: '0' }}>
               <strong>{Math.ceil(routeResponse.duration / 60)}</strong>
             </h1>
             <h1 style={{ margin: '0' }}>분</h1>
@@ -94,43 +94,43 @@ const AssistantRouteResult = () => {
         </RouteDetail>
       </PreviewContent>
       <MainContent>
-      <ResultContainer>
-            {routeResponse.waypoints.map((e, index) => {
-              if (index < routeResponse.waypoints.length - 1) {
-                return (
-                  <>
-                  <WaypointListWrapper>
-                    { stopoverNameMap?.[e.name] ? 
-                      <WaypointIconWrapper>
-                        <GeoAlt></GeoAlt>
-                      </WaypointIconWrapper> :
-                    "" }
-                    { stopoverNameMap?.[e.name] ? <strong>{e.name}</strong> : <div>{e.name}</div> }
-                    { e.level ? <small style={{color: "gray"}}>&nbsp;{`${e.level}층`.replace('-', '지하')}</small> : "" }
-                  </WaypointListWrapper>
-                  <WaypointWalkListWrapper>
+        <ResultContainer>
+          {routeResponse.waypoints.map((e, index) => {
+            if (index < routeResponse.waypoints.length - 1) {
+              return (
+                <>
+                <WaypointListWrapper key={index}>
+                  { stopoverNameMap?.[e.name] ? 
                     <WaypointIconWrapper>
-                      <ChevronDoubleDown color="#0275d8"></ChevronDoubleDown>
-                    </WaypointIconWrapper>
-                    <WaypointWalkIconWrapper>
-                      <PersonWalking></PersonWalking>
-                    </WaypointWalkIconWrapper>
-                    <small style={{color: "gray"}}>&nbsp;도보 이동</small>
-                  </WaypointWalkListWrapper>
-                  </>
-                );
-              } else {
-                return (
-                  <WaypointListWrapper>
-                    <WaypointIconWrapper>
-                      <Flag></Flag>
-                    </WaypointIconWrapper>
-                    <strong>{e.name}</strong>
-                    { e.level ? <small style={{color: "gray"}}>&nbsp;{`(${e.level}층)`.replace('-', '지하')}</small> : "" }
-                  </WaypointListWrapper>
-                );
-              }
-            })}
+                      <GeoAlt></GeoAlt>
+                    </WaypointIconWrapper> :
+                  "" }
+                  { stopoverNameMap?.[e.name] ? <strong>{e.name}</strong> : <div>{e.name}</div> }
+                  { e.level ? <small style={{color: "gray"}}>&nbsp;{`${e.level}층`.replace('-', '지하')}</small> : "" }
+                </WaypointListWrapper>
+                <WaypointWalkListWrapper>
+                  <WaypointIconWrapper>
+                    <ChevronDoubleDown color="#79A8DD"></ChevronDoubleDown>
+                  </WaypointIconWrapper>
+                  <WaypointWalkIconWrapper>
+                    <PersonWalking></PersonWalking>
+                  </WaypointWalkIconWrapper>
+                  <small style={{color: "gray"}}>&nbsp;도보 이동</small>
+                </WaypointWalkListWrapper>
+                </>
+              );
+            } else {
+              return (
+                <WaypointListWrapper key={index}>
+                  <WaypointIconWrapper>
+                    <Flag></Flag>
+                  </WaypointIconWrapper>
+                  <strong>{e.name}</strong>
+                  { e.level ? <small style={{color: "gray"}}>&nbsp;{`(${e.level}층)`.replace('-', '지하')}</small> : "" }
+                </WaypointListWrapper>
+              );
+            }
+          })}
         </ResultContainer>
       </MainContent>
     </SheetPage>

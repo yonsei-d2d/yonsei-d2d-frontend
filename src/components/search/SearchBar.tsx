@@ -123,7 +123,7 @@ const SearchBar = () => {
   };
 
   const onBlurHandler = () => {
-    if (results.length > 0) return;
+    if (query.length > 0) return;
     setQuery("");
     setFocus(false);
     goBack();
@@ -145,13 +145,13 @@ const SearchBar = () => {
         &nbsp;
         {splS.map((e, i) => {
           return (
-            <span key={i}>
+            <span style={{color: "gray"}} key={i}>
               <>{e}</>
-              <strong style={{color: "#003876",}}>{debouncedQuery}</strong>
+              <strong style={{color: "#003876"}}>{debouncedQuery}</strong>
             </span>
           );
         })}
-        <>{spl.at(-1)}</>
+        <span style={{color: "gray"}}>{spl.at(-1)}</span>
       </>
     );
   };
@@ -166,6 +166,7 @@ const SearchBar = () => {
         <img style={{
           aspectRatio: '1 / 1',
           objectFit: 'contain',
+          marginRight: '10px',
           height: '30px'
         }} src={MainIcon} />
         <StyledFormControl
@@ -192,12 +193,11 @@ const SearchBar = () => {
             <SearchListGroup>
               {results.map((e, i) => (
                 <ListGroup.Item
+                  className="border-0"
                   action
                   onClick={() => onClickSearchResult(i)}
                   key={i}
                 >
-                  <CategoryEmojiUtil key={i} type={e.type} />
-                  {` `}
                   {highlightSearchResult(e.name)}
                 </ListGroup.Item>
               ))}

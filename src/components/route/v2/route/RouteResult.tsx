@@ -73,14 +73,14 @@ const RouteResult = () => {
         <RouteInfo>
           {
             routeResponse.stopovers.map((e, i) => {
-              if (i === routeResponse.stopovers.length - 1) return <small>{e.name}</small>
-              else return <small>{`${e.name} →`}&nbsp;</small>
+              if (i === routeResponse.stopovers.length - 1) return <small key={i}>{e.name}</small>
+              else return <small key={i}>{`${e.name} →`}&nbsp;</small>
             })
           }
         </RouteInfo>
         <RouteDetail>
           <RouteContentWrapper>
-            <h1 style={{ color: "#0275d8", margin: '0' }}>
+            <h1 style={{ color: "#79A8DD", margin: '0' }}>
               <strong>{Math.ceil(routeResponse.duration / 60)}</strong>
             </h1>
             <h1 style={{ margin: '0' }}>분</h1>
@@ -98,7 +98,7 @@ const RouteResult = () => {
               if (index < routeResponse.waypoints.length - 1) {
                 return (
                   <>
-                  <WaypointListWrapper>
+                  <WaypointListWrapper key={index}>
                     { stopoverNameMap?.[e.name] ? 
                       <WaypointIconWrapper>
                         <GeoAlt></GeoAlt>
@@ -109,7 +109,7 @@ const RouteResult = () => {
                   </WaypointListWrapper>
                   <WaypointWalkListWrapper>
                     <WaypointIconWrapper>
-                      <ChevronDoubleDown color="#0275d8"></ChevronDoubleDown>
+                      <ChevronDoubleDown color="#79A8DD"></ChevronDoubleDown>
                     </WaypointIconWrapper>
                     <WaypointWalkIconWrapper>
                       <PersonWalking></PersonWalking>
@@ -120,7 +120,7 @@ const RouteResult = () => {
                 );
               } else {
                 return (
-                  <WaypointListWrapper>
+                  <WaypointListWrapper key={index}>
                     <WaypointIconWrapper>
                       <Flag></Flag>
                     </WaypointIconWrapper>

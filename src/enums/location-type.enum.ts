@@ -6,5 +6,6 @@ export enum LocationType {
     RESTAURANT = "restaurant",
     CAFE = "cafe",
     WAYPOINT = "waypoint",
+    PLACE = "place",
     NONE = "none",
 }

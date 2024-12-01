@@ -35,9 +35,8 @@ const SearchResult = () => {
       <PreviewContent>
         <ResultContainer>
           <ResultContentWrapper>
-            <CategoryEmojiUtil type={targetLocation.type} />
-            <div>{targetLocation.name}</div>
             <CategoryTagUtil type={targetLocation.type} />
+            <div>{targetLocation.name}</div>
           </ResultContentWrapper>
         </ResultContainer>
       </PreviewContent>
