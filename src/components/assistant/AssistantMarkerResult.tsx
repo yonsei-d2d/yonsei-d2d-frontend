@@ -7,6 +7,7 @@ import { Mode } from "../../enums/mode.enum";
 import { MapMode } from "../../enums/map-mode.enum";
 import { CategoryTagUtil } from "../../utils/category-tag-util";
 import { CategoryEmojiUtil } from "../../utils/emoji-util";
+import { Alert } from "react-bootstrap";
 
 const ResultContainer = styled.div`
   padding: 0px;
@@ -18,8 +19,8 @@ const ResultContentWrapper = styled.div`
   gap: 10px;
 `;
 
-const SearchResult = () => {
-  const { targetLocation, setMapMode } = useRouteMap();
+const AssistantMarkerResult = () => {
+  const { assistantMessage, targetLocation, setMapMode } = useRouteMap();
 
   useEffect(() => {
     setMapMode(MapMode.MARKER);
@@ -31,8 +32,9 @@ const SearchResult = () => {
   if (!targetLocation) return null;
 
   return (
-    <SheetPage title="상세 정보" mode={Mode.SEARCH_RESULT}>
+    <SheetPage title="상세 정보" mode={Mode.ASSISTANT_MARKER_RESULT}>
       <PreviewContent>
+        <Alert variant="primary">{assistantMessage}</Alert>
         <ResultContainer>
           <ResultContentWrapper>
             <CategoryTagUtil type={targetLocation.type} />
@@ -44,4 +46,4 @@ const SearchResult = () => {
   );
 };
 
-export default SearchResult;
+export default AssistantMarkerResult;
