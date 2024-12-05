@@ -54,12 +54,11 @@ const IconWrapper = styled.div`
   margin: 0 10px;
 `;
 
-
 const SearchForm = styled(Form)`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
 
 const SearchResult = styled.div`
   width: 100%;
@@ -145,13 +144,13 @@ const SearchBar = () => {
         &nbsp;
         {splS.map((e, i) => {
           return (
-            <span style={{color: "gray"}} key={i}>
+            <span style={{ color: "gray" }} key={i}>
               <>{e}</>
-              <strong style={{color: "#003876"}}>{debouncedQuery}</strong>
+              <strong style={{ color: "#003876" }}>{debouncedQuery}</strong>
             </span>
           );
         })}
-        <span style={{color: "gray"}}>{spl.at(-1)}</span>
+        <span style={{ color: "gray" }}>{spl.at(-1)}</span>
       </>
     );
   };
@@ -163,13 +162,17 @@ const SearchBar = () => {
         style={{ width: "100%" }}
         onSubmit={(e) => e.preventDefault()}
       >
-        <img style={{
-          aspectRatio: '1 / 1',
-          objectFit: 'contain',
-          marginRight: '10px',
-          height: '30px'
-        }} src={MainIcon} />
+        <img
+          style={{
+            aspectRatio: "1 / 1",
+            objectFit: "contain",
+            marginRight: "10px",
+            height: "30px",
+          }}
+          src={MainIcon}
+        />
         <StyledFormControl
+          autoComplete="off"
           onFocus={onFocusHandler}
           onBlur={onBlurHandler}
           value={query}
@@ -177,7 +180,7 @@ const SearchBar = () => {
             setQuery(e.target.value);
           }}
           style={{
-            color: '#003876 !important'
+            color: "#003876 !important",
           }}
           type="search"
           placeholder="장소 검색"
