@@ -27,7 +27,7 @@ const AssistantForm = styled(InputGroup)`
 const SearchButton = styled.button`
   border: none;
   outline: none;
-  background-color: #79A8DD;
+  background-color: #79a8dd;
   color: white;
   height: 2.5em;
   width: 200px;
@@ -37,7 +37,7 @@ const SearchButton = styled.button`
   align-items: center;
   justify-content: center;
   &:invalid {
-    background-color: #79A8DD;
+    background-color: #79a8dd;
   }
   &:active {
     background-color: #003876;
@@ -128,17 +128,20 @@ export const Assistant = () => {
               <Form onSubmit={handleSubmit}>
                 <AssistantForm>
                   <Form.Control
+                    autoComplete="off"
                     type="text"
                     name="query"
                     placeholder="예) 공학관에서 경영관 가는 길에 카페 들리고 싶어"
                     required
                   />
                 </AssistantForm>
-                <div style={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}>
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
                   <SearchButton type="submit">
                     요청하기&nbsp;&nbsp;
                     <Robot></Robot>

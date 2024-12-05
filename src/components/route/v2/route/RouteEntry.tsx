@@ -161,28 +161,32 @@ export const RouteEntry = ({
   const DropdownGenerator = () => {
     return (
       <Dropdown>
-        <Dropdown.Toggle style={{
-          width: '120px',
-          backgroundColor: 'transparent',
-          border: '0',
-          color: 'black'
-        }}>
+        <Dropdown.Toggle
+          style={{
+            width: "120px",
+            backgroundColor: "transparent",
+            border: "0",
+            color: "black",
+          }}
+        >
           {routeTypeToString(currentType)}
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {Object.values(RouteType).map((e, i) => {
-            if ((e === RouteType.COORDINATES)) return null;
-            return <Dropdown.Item
-              style={{border: '0'}}
-              key={i}
-              onClick={() => {
-                setInputValue("");
-                resetRouteRequest();
-                setCurrentType(e);
-              }}
-            >
-              {routeTypeToString(RouteType[e])}
-            </Dropdown.Item>
+            if (e === RouteType.COORDINATES) return null;
+            return (
+              <Dropdown.Item
+                style={{ border: "0" }}
+                key={i}
+                onClick={() => {
+                  setInputValue("");
+                  resetRouteRequest();
+                  setCurrentType(e);
+                }}
+              >
+                {routeTypeToString(RouteType[e])}
+              </Dropdown.Item>
+            );
           })}
         </Dropdown.Menu>
       </Dropdown>
@@ -194,13 +198,14 @@ export const RouteEntry = ({
       case RouteType.ROOM:
         return (
           <Form.Control
+            autoComplete="off"
             type="text"
             name={target}
             value={inputValue}
             style={{
-              border: '0',
-              borderRadius: '0',
-              borderBottom: '1px solid gray'
+              border: "0",
+              borderRadius: "0",
+              borderBottom: "1px solid gray",
             }}
             onChange={(e) => {
               setInputValue(e.target.value);
@@ -213,14 +218,15 @@ export const RouteEntry = ({
       case RouteType.COORDINATES:
         return (
           <Form.Control
+            autoComplete="off"
             disabled
             type="text"
             name={target}
             value={"현재 위치"}
             style={{
-              border: '0',
-              borderRadius: '0',
-              borderBottom: '1px solid gray'
+              border: "0",
+              borderRadius: "0",
+              borderBottom: "1px solid gray",
             }}
             placeholder="현재 위치"
             required
@@ -228,53 +234,56 @@ export const RouteEntry = ({
         );
       case RouteType.LOCATION_ID:
         return (
-          <div style={{
-            display: 'flex',
-            width: '100%',
-            flexDirection: 'column'
-          }}>
-          <Form.Control
-            type="text"
-            name={target}
-            value={inputValue}
+          <div
             style={{
-              border: '0',
-              borderRadius: '0',
-              borderBottom: '1px solid gray'
+              display: "flex",
+              width: "100%",
+              flexDirection: "column",
             }}
-            onChange={(e) => {
-              searchLocation(e.target.value);
-            }}
-            onFocus={() => {
-              resetRouteRequest();
-              setInputValue("");
-              setShowResult(true);
-            }}
-            placeholder="장소 검색"
-            required
-          />
-          {showResult ? (
-            searchResults.length > 0 ? (
-              <SearchResult>
-                <SearchResultListGroup>
-                  {searchResults.map((e, i) => (
-                    <ListGroup.Item
-                      className="border-0"
-                      action
-                      onClick={() => setRouteRequestByLocation(i)}
-                      key={i}
-                    >
-                      {highlightSearchResult(e.name)}
-                    </ListGroup.Item>
-                  ))}
-                </SearchResultListGroup>
-              </SearchResult>
+          >
+            <Form.Control
+              autoComplete="off"
+              type="text"
+              name={target}
+              value={inputValue}
+              style={{
+                border: "0",
+                borderRadius: "0",
+                borderBottom: "1px solid gray",
+              }}
+              onChange={(e) => {
+                searchLocation(e.target.value);
+              }}
+              onFocus={() => {
+                resetRouteRequest();
+                setInputValue("");
+                setShowResult(true);
+              }}
+              placeholder="장소 검색"
+              required
+            />
+            {showResult ? (
+              searchResults.length > 0 ? (
+                <SearchResult>
+                  <SearchResultListGroup>
+                    {searchResults.map((e, i) => (
+                      <ListGroup.Item
+                        className="border-0"
+                        action
+                        onClick={() => setRouteRequestByLocation(i)}
+                        key={i}
+                      >
+                        {highlightSearchResult(e.name)}
+                      </ListGroup.Item>
+                    ))}
+                  </SearchResultListGroup>
+                </SearchResult>
+              ) : (
+                <ListGroup></ListGroup>
+              )
             ) : (
-              <ListGroup></ListGroup>
-            )
-          ) : (
-            <></>
-          )}
+              <></>
+            )}
           </div>
         );
     }
@@ -288,13 +297,13 @@ export const RouteEntry = ({
         &nbsp;
         {splS.map((e, i) => {
           return (
-            <span style={{color: "gray"}} key={i}>
+            <span style={{ color: "gray" }} key={i}>
               <>{e}</>
-              <strong style={{color: "#003876"}}>{debouncedQuery}</strong>
+              <strong style={{ color: "#003876" }}>{debouncedQuery}</strong>
             </span>
           );
         })}
-        <span style={{color: "gray"}}>{spl.at(-1)}</span>
+        <span style={{ color: "gray" }}>{spl.at(-1)}</span>
       </>
     );
   };
@@ -303,7 +312,11 @@ export const RouteEntry = ({
     <RouteEntryWrapper>
       <RouteForm>
         <IconWrapper>
-          {target === "origin" ? <GeoAlt color="#79A8DD"></GeoAlt> : <Flag color="#79A8DD"></Flag>}
+          {target === "origin" ? (
+            <GeoAlt color="#79A8DD"></GeoAlt>
+          ) : (
+            <Flag color="#79A8DD"></Flag>
+          )}
         </IconWrapper>
         {DropdownGenerator()}
       </RouteForm>
